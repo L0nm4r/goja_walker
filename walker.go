@@ -3,6 +3,7 @@ package gojawalker
 import (
 	"errors"
 	"log"
+	"reflect"
 
 	"github.com/dop251/goja/ast"
 )
@@ -15,13 +16,21 @@ type IVisitor interface {
 
 // error list
 var ErrNodeIsNil = errors.New("node is nil")
+var ErrNodeValueIsNil = errors.New("node value is nil")
 var ErrVisitorIsNil = errors.New("visitor cann't be nil")
+
+func NodeValueIsNil(n ast.Node) bool {
+	return reflect.ValueOf(n).IsNil()
+}
 
 func Walk(v IVisitor, n ast.Node) error {
 	if n == nil {
 		return ErrNodeIsNil
 	}
 
+	if NodeValueIsNil(n) {
+		return ErrNodeValueIsNil
+	}
 	if v == nil {
 		return ErrVisitorIsNil
 	}
